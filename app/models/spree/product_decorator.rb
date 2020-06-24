@@ -3,26 +3,21 @@ module Spree
   module ProductDecorator
     def self.prepended(base)
       base.has_many :reviews
-
-      base.extend ClassMethods
     end
 
-    module ClassMethods
-      def stars
-        avg_rating.try(:round) || 0
-      end
-
-      def recalculate_rating
-        self[:reviews_count] = reviews.reload.approved.count
-        if reviews_count > 0
-          self[:avg_rating] = reviews.approved.sum(:rating).to_f / reviews_count
-        else
-          self[:avg_rating] = 0
-        end
-        save
-      end
+    def stars
+      avg_rating.try(:round) || 0
     end
 
+    def recalculate_rating
+      self[:reviews_count] = reviews.reload.approved.count
+      if reviews_count > 0
+        self[:avg_rating] = reviews.approved.sum(:rating).to_f / reviews_count
+      else
+        self[:avg_rating] = 0
+      end
+      save
+    end
   end
 end
 
